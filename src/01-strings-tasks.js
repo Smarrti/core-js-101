@@ -120,8 +120,12 @@ function removeLeadingAndTrailingWhitespaces(value) {
  *   'A', 5  => 'AAAAA'
  *   'cat', 3 => 'catcatcat'
  */
-function repeatString(/* value, count */) {
-  throw new Error('Not implemented');
+function repeatString(value, count) {
+  let string = '';
+  for (let i = 0; i < count; i += 1) {
+    string += value;
+  }
+  return string;
 }
 
 /**
@@ -136,8 +140,10 @@ function repeatString(/* value, count */) {
  *   'I like legends', 'end' => 'I like legs',
  *   'ABABAB','BA' => 'ABAB'
  */
-function removeFirstOccurrences(/* str, value */) {
-  throw new Error('Not implemented');
+function removeFirstOccurrences(str, value) {
+  let string = str.slice(0, str.indexOf(value));
+  string += str.slice(str.indexOf(value) + value.length, str.length);
+  return string;
 }
 
 /**
@@ -151,8 +157,8 @@ function removeFirstOccurrences(/* str, value */) {
  *   '<span>' => 'span'
  *   '<a>' => 'a'
  */
-function unbracketTag(/* str */) {
-  throw new Error('Not implemented');
+function unbracketTag(str) {
+  return str.slice(1, str.length - 1);
 }
 
 
@@ -166,8 +172,8 @@ function unbracketTag(/* str */) {
  *   'Thunderstruck' => 'THUNDERSTRUCK'
  *  'abcdefghijklmnopqrstuvwxyz' => 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
  */
-function convertToUpperCase(/* str */) {
-  throw new Error('Not implemented');
+function convertToUpperCase(str) {
+  return str.toUpperCase();
 }
 
 /**
@@ -185,8 +191,8 @@ function convertToUpperCase(/* str */) {
  *   ],
  *   'info@gmail.com' => ['info@gmail.com']
  */
-function extractEmails(/* str */) {
-  throw new Error('Not implemented');
+function extractEmails(str) {
+  return str.split(';');
 }
 
 /**
@@ -212,8 +218,14 @@ function extractEmails(/* str */) {
  *             '└──────────┘\n'
  *
  */
-function getRectangleString(/* width, height */) {
-  throw new Error('Not implemented');
+function getRectangleString(width, height) {
+  const firstLine = `┌${repeatString('─', width - 2)}┐\n`;
+  let lines = '';
+  for (let i = 0; i < height - 2; i += 1) {
+    lines += `│${repeatString(' ', width - 2)}│\n`;
+  }
+  const lastLine = `└${repeatString('─', width - 2)}┘\n`;
+  return firstLine + lines + lastLine;
 }
 
 
@@ -233,8 +245,22 @@ function getRectangleString(/* width, height */) {
  *    => 'NOPQRSTUVWXYZABCDEFGHIJKLMnopqrstuvwxyzabcdefghijklm'
  *
  */
-function encodeToRot13(/* str */) {
-  throw new Error('Not implemented');
+function encodeToRot13(value) {
+  const latinAlphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+  const rot13Alphabet = 'NOPQRSTUVWXYZABCDEFGHIJKLMnopqrstuvwxyzabcdefghijklm';
+  const symbols = ' ?!';
+  let str = '';
+  value.split('').forEach((e) => {
+    const letter = rot13Alphabet[latinAlphabet.indexOf(e)];
+    if (letter) {
+      str += letter;
+    } else if (symbols.indexOf(e)) {
+      str += symbols[symbols.indexOf(e)];
+    } else {
+      str += ' ';
+    }
+  });
+  return str;
 }
 
 /**
@@ -250,8 +276,14 @@ function encodeToRot13(/* str */) {
  *   isString('test') => true
  *   isString(new String('test')) => true
  */
-function isString(/* value */) {
-  throw new Error('Not implemented');
+function isString(value) {
+  if (typeof value === 'string') {
+    return true;
+  }
+  if ((typeof value === 'object') && (value !== null)) {
+    return typeof value[0] === 'string';
+  }
+  return false;
 }
 
 
@@ -279,8 +311,48 @@ function isString(/* value */) {
  *   'Q♠' => 50
  *   'K♠' => 51
  */
-function getCardId(/* value */) {
-  throw new Error('Not implemented');
+function getCardId(value) {
+  let num = 0;
+  if (!Number.isNaN(parseInt(value[0], 10)) && parseInt(value[0], 10) !== 1) {
+    num = parseInt(value[0], 10) - 1;
+  } else if (value.length === 3) {
+    num = 9;
+  } else {
+    switch (value[0]) {
+      case 'A':
+        num = 0;
+        break;
+      case 'J':
+        num = 10;
+        break;
+      case 'Q':
+        num = 11;
+        break;
+      case 'K':
+        num = 12;
+        break;
+      default:
+        break;
+    }
+  }
+  let check = 1;
+  if (value.length === 3) {
+    check = 2;
+  }
+  switch (value[check]) {
+    case '♦':
+      num += 13;
+      break;
+    case '♥':
+      num += 26;
+      break;
+    case '♠':
+      num += 39;
+      break;
+    default:
+      break;
+  }
+  return num;
 }
 
 
